@@ -1,0 +1,62 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+*/
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  margin: 40px;
+  color: #333;
+}
+
+h1 {
+  color: #1e3a8a;
+  margin-bottom: 30px;
+}
+
+#products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-card p {
+  margin: 8px 0;
+}
+
+.product-card a {
+  text-decoration: none;
+  color: white;
+  background: #2563eb;
+  padding: 8px 14px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.product-card a:hover {
+  background: #1d4ed8;
+}
+
+.new-product-btn {
+  display: inline-block;
+  margin-top: 30px;
+  background: green;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+}
