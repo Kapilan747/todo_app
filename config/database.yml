@@ -58,12 +58,12 @@ test:
 production:
   adapter: mysql2
   encoding: utf8mb4
-  database: myapp_production
-  username: admin
-  password: kapi9626
-  host: database-1.cdemucmcme2a.ap-south-2.rds.amazonaws.com
-  port: 3306
-  pool: 5
+  database: <%= ENV.fetch("DB_NAME") %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
+  host: <%= ENV.fetch("DB_HOST") %>
+  port: <%= ENV.fetch("DB_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   #cable:
    # adapter: mysql2
     #encoding: utf8mb4
