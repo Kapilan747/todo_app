@@ -1,4 +1,4 @@
-name: Deploy RoR to ECS
+name: Deploy RoR through AWS CodePipeline
 
 on:
   push:
@@ -11,77 +11,42 @@ permissions:
 
 env:
   AWS_REGION: ap-south-2
-  AWS_ACCOUNT_ID: "618015514579"
   AWS_ROLE_ARN: arn:aws:iam::618015514579:role/kapilan-tf-ror-gha-deploy-role
-  ECR_REPOSITORY: kapilan_manual_ror_ecr
-  ECS_CLUSTER: kapilan-tf-ror-cluster
-  ECS_SERVICE: kapilan-tf-ror-service
-  ECS_TASK_DEFINITION_FAMILY: kapilan-tf-ror-task
-  CONTAINER_NAME: kapilan-tf-ror-container
+  PIPELINE_SOURCE_BUCKET: kapilan-tf-ror-pipeline-artifacts-618015514579
+  PIPELINE_SOURCE_KEY: source/source.zip
+  CODEPIPELINE_NAME: kapilan-tf-ror-codepipeline
 
 jobs:
-  deploy:
-    name: Build image and deploy to ECS
+  trigger-codepipeline:
+    name: Upload source and start CodePipeline
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials with OIDC
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build, tag, and push Docker image
-        id: build-image
-        shell: bash
+      - name: Create source zip
         run: |
-          IMAGE_TAG="tf-ror-${GITHUB_SHA::7}"
-          IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          zip -r source.zip . \
+            -x ".git/*" \
+            -x "tmp/*" \
+            -x "log/*" \
+            -x "node_modules/*" \
+            -x "vendor/bundle/*"
 
-          echo "IMAGE_TAG=${IMAGE_TAG}"
-          echo "IMAGE_URI=${IMAGE_URI}"
-
-          docker build -t "${IMAGE_URI}" .
-          docker push "${IMAGE_URI}"
-
-          echo "image=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
-
-      - name: Download current ECS task definition
-        shell: bash
+      - name: Upload source zip to S3
         run: |
-          aws ecs describe-task-definition \
-            --task-definition "${ECS_TASK_DEFINITION_FAMILY}" \
-            --query taskDefinition \
-            --output json > task-definition-raw.json
+          aws s3 cp source.zip "s3://${PIPELINE_SOURCE_BUCKET}/${PIPELINE_SOURCE_KEY}" \
+            --region "$AWS_REGION"
 
-          jq 'del(
-            .taskDefinitionArn,
-            .revision,
-            .status,
-            .requiresAttributes,
-            .compatibilities,
-            .registeredAt,
-            .registeredBy
-          )' task-definition-raw.json > task-definition.json
-
-      - name: Render new image in ECS task definition
-        id: render-task-definition
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Start CodePipeline
+        run: |
+          aws codepipeline start-pipeline-execution \
+            --name "$CODEPIPELINE_NAME" \
+            --region "$AWS_REGION"
