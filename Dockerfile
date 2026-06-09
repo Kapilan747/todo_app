@@ -48,7 +48,13 @@ COPY . .
 
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 \
+    DB_NAME=dummy_build_db \
+    DB_USERNAME=dummy_build_user \
+    DB_PASSWORD=dummy_build_password \
+    DB_HOST=127.0.0.1 \
+    DB_PORT=3306 \
+    ./bin/rails assets:precompile
 
 FROM base
 
