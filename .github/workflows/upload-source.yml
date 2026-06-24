@@ -38,11 +38,11 @@ jobs:
         run: |
 
           zip -r source.zip . \
-            -x "*.git*" \
-            -x "log/*" \
-            -x "tmp/*"
-
-
+  -x ".git/*" \
+  -x "log/*" \
+  -x "tmp/*" \
+  -x "vendor/bundle/*" \
+  -x "source.zip"
 
       - name: Upload Source
 
@@ -55,10 +55,4 @@ jobs:
 
 
 
-      - name: Verify Upload
-
-        run: |
-
-          aws s3api head-object \
-          --bucket kapilan-tf-ror-pipeline-artifacts-618015514579 \
-          --key source/source.zip
+      
