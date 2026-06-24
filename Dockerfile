@@ -13,6 +13,8 @@ RUN apt-get update -qq && \
       libjemalloc2 \
       libvips \
       nginx \
+      wget \
+      unzip \
       procps \
       ca-certificates \
       && ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
@@ -60,6 +62,12 @@ FROM base
 
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
+
+RUN wget -q https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb \
+ && dpkg -i amazon-cloudwatch-agent.deb \
+ && rm amazon-cloudwatch-agent.deb
+
+COPY cloudwatch-agent-config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
 COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --chown=rails:rails --from=build /rails /rails
