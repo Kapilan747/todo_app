@@ -9,6 +9,14 @@ export RAILS_LOG_TO_STDOUT="${RAILS_LOG_TO_STDOUT:-true}"
 echo "Preparing database..."
 su -s /bin/bash rails -c "cd /rails && bundle exec rails db:prepare"
 
+echo "Starting CloudWatch Agent..."
+
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+  -s
+
 echo "Starting Rails/Puma on 127.0.0.1:3000..."
 su -s /bin/bash rails -c "cd /rails && bundle exec rails server -b 127.0.0.1 -p 3000" &
 
