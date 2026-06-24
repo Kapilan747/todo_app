@@ -50,6 +50,8 @@ COPY . .
 
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
+RUN mkdir -p log
+
 RUN SECRET_KEY_BASE_DUMMY=1 \
     DB_NAME=dummy_build_db \
     DB_USERNAME=dummy_build_user \
@@ -79,6 +81,7 @@ RUN chmod +x /rails/docker/start.sh && \
     rm -f /etc/nginx/sites-enabled/default && \
     ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
     mkdir -p /var/log/nginx /var/lib/nginx/body /run && \
+    mkdir -p /rails/log /rails/tmp/pids /rails/tmp/cache /rails/tmp/sockets && \
     chown -R rails:rails /rails
 
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
