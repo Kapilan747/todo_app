@@ -1,0 +1,64 @@
+name: Upload Source To S3
+
+on:
+  push:
+    branches:
+      - terraform-ecs
+
+permissions:
+  id-token: write
+  contents: read
+
+
+jobs:
+  upload:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+
+        with:
+          role-to-assume: arn:aws:iam::618015514579:role/kapilan-tf-ror-gha-deploy-role
+
+          aws-region: ap-south-2
+
+
+
+
+      - name: Zip source
+
+        run: |
+
+          zip -r source.zip . \
+            -x "*.git*" \
+            -x "log/*" \
+            -x "tmp/*"
+
+
+
+      - name: Upload Source
+
+
+        run: |
+
+          aws s3 cp source.zip \
+          s3://kapilan-tf-ror-pipeline-artifacts-618015514579/source/source.zip
+
+
+
+
+      - name: Verify Upload
+
+        run: |
+
+          aws s3api head-object \
+          --bucket kapilan-tf-ror-pipeline-artifacts-618015514579 \
+          --key source/source.zip
