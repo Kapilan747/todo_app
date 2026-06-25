@@ -1,12 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    AWS_DEFAULT_REGION: "ap-south-2"
-    AWS_ACCOUNT_ID: "618015514579"
-    ECR_REPOSITORY_NAME: "kapilan_manual_ror_ecr"
-    ECS_CONTAINER_NAME: "kapilan-tf-ror-container"
-
 phases:
   pre_build:
     commands:
