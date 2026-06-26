@@ -13,11 +13,12 @@ fi
 
 echo "Task ID: $TASK_ID"
 
-mkdir -p /var/log/nginx /app/log
+mkdir -p /var/log/nginx /rails/log
+
 touch /var/log/nginx/access.log \
       /var/log/nginx/error.log \
-      /app/log/production.log \
-      /app/log/puma.error.log
+      /rails/log/production.log \
+      /rails/log/puma.error.log
 
 sed -i "s/{instance_id}/$TASK_ID/g" \
   /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
