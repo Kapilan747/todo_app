@@ -62,6 +62,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 \
 
 FROM base
 
+
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
 
