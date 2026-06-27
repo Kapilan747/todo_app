@@ -20,7 +20,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::618015514579:role/kapilan-tf-ror-gha-deploy-role
+          role-to-assume: arn:aws:iam::824756206534:role/kapilan-tf-ror-gha-deploy-role
           aws-region: ap-south-2
 
       - name: Create source archive
@@ -37,4 +37,4 @@ jobs:
       - name: Upload source archive to S3
         run: |
           aws s3 cp source.zip \
-            s3://kapilan-tf-ror-pipeline-artifacts-618015514579/source/source.zip
+            s3://kapilan-tf-ror-pipeline-artifacts-824756206534/source/source.zip
