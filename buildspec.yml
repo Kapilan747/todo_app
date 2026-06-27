@@ -4,9 +4,9 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
-      - REPOSITORY_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME"
+      - REPOSITORY_URI=824756206534.dkr.ecr.ap-south-2.amazonaws.com/kapilan_manual_ror_ecr
       - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
-      - IMAGE_TAG="tf-ror-cp-${CODEBUILD_BUILD_NUMBER}"
+      - IMAGE_TAG=tf-ror-cp-${CODEBUILD_BUILD_NUMBER}
       - echo "Repository URI is $REPOSITORY_URI"
       - echo "Image tag is $IMAGE_TAG"
 
@@ -14,7 +14,7 @@ phases:
     commands:
       - echo "Build started on $(date)"
       - echo "Building Docker image..."
-      - docker build -t "$ECR_REPOSITORY_NAME:$IMAGE_TAG" .
+      - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
       - docker tag "$ECR_REPOSITORY_NAME:$IMAGE_TAG" "$REPOSITORY_URI:$IMAGE_TAG"
 
   post_build:
