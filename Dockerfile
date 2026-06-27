@@ -69,6 +69,10 @@ RUN wget -q https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/
  && dpkg -i amazon-cloudwatch-agent.deb \
  && rm amazon-cloudwatch-agent.deb
 
+# RUN echo "Testing wget..." && \
+#     wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb && \
+#     ls -lh amazon-cloudwatch-agent.deb
+
 COPY cloudwatch-agent-config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
 COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"

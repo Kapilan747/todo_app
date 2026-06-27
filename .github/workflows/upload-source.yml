@@ -3,7 +3,7 @@ name: Upload Source To S3
 on:
   push:
     branches:
-      - terraform-ecs
+      - new-aws
 
 permissions:
   id-token: write
