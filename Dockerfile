@@ -52,7 +52,8 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
 RUN mkdir -p log
 
-RUN SECRET_KEY_BASE_DUMMY=1 \
+RUN chmod +x bin/rails && \
+    SECRET_KEY_BASE_DUMMY=1 \
     DB_NAME=dummy_build_db \
     DB_USERNAME=dummy_build_user \
     DB_PASSWORD=dummy_build_password \
