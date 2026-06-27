@@ -10,12 +10,11 @@ phases:
       - echo "Repository URI is $REPOSITORY_URI"
       - echo "Image tag is $IMAGE_TAG"
 
-  build:
-    commands:
-      - echo "Build started on $(date)"
-      - echo "Building Docker image..."
-      - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
-      - docker tag "$ECR_REPOSITORY_NAME:$IMAGE_TAG" "$REPOSITORY_URI:$IMAGE_TAG"
+build:
+  commands:
+    - echo "Build started on $(date)"
+    - echo "Building Docker image..."
+    - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
 
   post_build:
     commands:
