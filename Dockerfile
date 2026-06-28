@@ -21,7 +21,7 @@ RUN apt-get update -qq && \
       && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV RAILS_ENV="production" \
-    RAILS_LOG_TO_STDOUT="true" \
+    RAILS_LOG_TO_STDOUT="false" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development" \
@@ -47,6 +47,8 @@ RUN bundle install && \
     bundle exec bootsnap precompile -j 1 --gemfile
 
 COPY . .
+
+RUN mkdir -p log tmp/pids tmp/cache tmp/sockets storage
 
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
