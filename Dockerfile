@@ -85,11 +85,10 @@ COPY --chown=rails:rails --from=build /rails /rails
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 COPY docker/start.sh /rails/docker/start.sh
 
-RUN chmod +x /rails/docker/start.sh && \
+RUN chmod +x /rails/docker/start.sh /rails/bin/docker-entrypoint && \
     rm -f /etc/nginx/sites-enabled/default && \
     ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
     mkdir -p /var/log/nginx /var/lib/nginx/body /run && \
-    mkdir -p /rails/log /rails/tmp/pids /rails/tmp/cache /rails/tmp/sockets && \
     chown -R rails:rails /rails
 
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
